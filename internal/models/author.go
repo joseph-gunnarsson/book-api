@@ -33,7 +33,7 @@ func DeleteAuthor(author *Author) error {
 
 func UpdateAuthor(author *Author) error {
 	db := database.DB
-	result := db.Save(author)
+	result := db.Model(&author).Updates(author)
 	if result.Error != nil {
 		return result.Error
 	}

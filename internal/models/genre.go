@@ -34,7 +34,7 @@ func DeleteGenre(genre *Genre) error {
 
 func UpdateGenre(genre *Genre) error {
 	db := database.DB
-	result := db.Save(genre)
+	result := db.Model(&genre).Updates(genre)
 
 	if result.Error != nil {
 		return result.Error
@@ -55,7 +55,7 @@ func GetAllGenre() ([]Genre, error) {
 	return genres, nil
 }
 
-func GetByName(name string) (Genre, error) {
+func GetGenreByName(name string) (Genre, error) {
 	db := database.DB
 	var genre Genre
 	result := db.Where("genre = ?", name).First(&genre)

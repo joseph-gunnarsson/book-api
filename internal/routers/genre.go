@@ -9,20 +9,41 @@ import (
 	"github.com/joseph-gunnarsson/book-api/internal/models"
 )
 
-func GenreRoutes(r *chi.Mux) chi.Router {
-
+func GenreRoutes(r *chi.Mux) {
 	r.Get("/genres", GetAllGenres)
 	r.Post("/genres", CreateGenre)
+	r.Get("/genres/{name}", getGenreByName)
 	r.Put("/genres/{name}", UpdateGenre)
 	r.Delete("/genres/{name}", DeleteGenre)
-	return r
+}
+
+func getGenreByName(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+
+	genre, err := models.GetGenreByName(name)
+	if err != nil {
+		handleErrorResponse(w, "Failed to get genre", err, http.StatusBadRequest)
+		return
+	}
+
+	data, err := json.Marshal(genre)
+
+	if err != nil {
+		handleErrorResponse(w, "Failed to marshal response", err, http.StatusInternalServerError)
+		return
+	}
+
+	_, err = w.Write(data)
+	if err != nil {
+		log.Printf("Error writing response: %v", err)
+	}
 }
 
 func DeleteGenre(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
-	genre, err := models.GetByName(name)
+	genre, err := models.GetGenreByName(name)
 	if err != nil {
-		handleErrorResponse(w, "Failed to get genre", err, http.StatusInternalServerError)
+		handleErrorResponse(w, "Failed to get genre", err, http.StatusBadRequest)
 		return
 	}
 

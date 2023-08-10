@@ -67,8 +67,9 @@ func main() {
 	}
 	r := chi.NewRouter()
 	routers.BookRoutes(r)
-	routers.AuthorRoutes(r)
 	routers.GenreRoutes(r)
+	routers.AuthorRoutes(r)
+
 	port := 8080
 	fmt.Printf("Server started on port %d\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%d", port), r)
